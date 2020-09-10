@@ -1,0 +1,10 @@
+spring:
+
+  kafka:
+    defaultConcurrency: 1
+    bootstrap-servers: ${KAFKA_HOST:localhost:9092}
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: MYTOPIC1:MYPOJO1,MYTOPIC2:MYPOJO2
+

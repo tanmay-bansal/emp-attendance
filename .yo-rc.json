@@ -1,0 +1,28 @@
+{
+  "@vibrent/generator-microsvc": {
+    "SVC_NAME": "empattendance",
+    "HELM_VARS_NAME": "empattendance",
+    "HELM_VARS_NAME_CAMELCASE": "empattendance",
+    "NEED_KAFKA": true,
+    "NEED_DATABASE": true,
+    "SCHEMA_NAME": "employee",
+    "ADD_ADDITIONAL_SCHEMAS": true,
+    "ADDITIONAL_SCHEMAS": "attendance",
+    "TECH_LEADS": [
+      "tbansal@vibrenthealth.com"
+    ],
+    "SCRUM_MASTERS": [
+      "tbansal@vibrenthealth.com"
+    ],
+    "SLACK_CHANNELS": [
+      {
+        "slackID": "`CFA9",
+        "name": "test-bots'"
+      }
+    ],
+    "GROUP_ID": "com.vibrent.empattendance",
+    "NEED_WEB": true,
+    "APP_NAME": "Empattendance",
+    "MAIN_PACKAGE": "com.vibrent.empattendance.empattendance"
+  }
+}

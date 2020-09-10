@@ -1,0 +1,150 @@
+## These values respect local deployments
+
+###############################################
+### Override for cluster deployments
+###############################################
+# REQUIRED: `--set global.cluster=true, global.pullPolicy=Always`
+# OPTIONAL: `--set empattendance_reg=<reg/cireg>, empattendance_version=<yourVersion>`
+###############################################
+###############################################
+
+
+
+###############################################
+### When deploying empattendance in umbrella (cluster)
+###############################################
+### requirements.yaml
+## - name: empattendance
+##   repository: "https://nex.vibrenthealth.com/repository/devcharts"
+##   version: 0.0.1-develop
+###############################################
+###############################################
+
+
+enabled: true
+
+global:
+  cluster: false
+  pullPolicy: IfNotPresent
+  vault:
+    disabled: true
+    testEnv: false # true goes to common-creds and false goes to namespace
+    vaultAddress: https://vault.ssk8s.vibrenthealth.com:443
+    vaultPath: qak8s.vibrenthealth.com
+    vaultRole: qak8s-services-role
+    vaultSkipVerify: false
+
+
+###############################################
+###############################################
+### empattendance api deployment values
+## add these in when you want to override default values of reg and develop
+empattendance_reg: reg
+empattendance_version: develop
+
+deployment:
+  annotations: []
+  podAnnotations: []
+  podAffinity: []
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - empattendance
+              - key: service
+                operator: In
+                values:
+                  - empattendance
+              - key: tier
+                operator: In
+                values:
+                  - app
+          topologyKey: kubernetes.io/hostname
+      - weight: 50
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - empattendance
+              - key: service
+                operator: In
+                values:
+                  - empattendance
+              - key: tier
+                operator: In
+                values:
+                  - app
+          topologyKey: failure-domain.beta.kubernetes.io/zone
+  volumeMounts: []
+  volumes: []
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 1.0
+    limits:
+      memory: 1024Mi
+      cpu: 1.0
+  image: empattendance
+  replicas: 1
+  containerPort:
+  - 8080
+  - 9010
+  - 5005
+  readinessProbe:
+    httpPathGet: /actuator/health
+    port: 8080
+    failureThreshold: 5
+    successThreshold: 1
+    initialDelaySeconds: 5
+    timeoutSeconds: 5
+    periodSeconds: 10
+
+###############################################
+###############################################
+### empattendance api configmap values
+configmap:
+  javaOptions: -server -XX:InitialRAMPercentage=50.0 -XX:MinRAMPercentage=50.0 -XX:MaxRAMPercentage=90.0
+
+###############################################
+###############################################
+
+empattendanceDatabase:
+  mysqlDatabase: employee
+  ## we cannot camelCase fullnameoverride because; "a DNS-1123 subdomain must consist of lower case alphanumeric characters"
+  ## and fullnameOverride gets used in database service/secret names.
+  fullnameOverride: empattendance-database
+  
+  additionalSchemas: attendance
+  
+
+
+###############################################
+###############################################
+
+empattendanceKafka:
+  enabled: false
+  configurationOverrides:
+    "offsets.topic.replication.factor": 1
+    "transaction.state.log.replication.factor": 1
+    "auto.create.topics.enable": false
+    "log.retention.hours": 168
+  topics:
+  - name: rename.this.topic
+    partitions: 1
+    replicationFactor: 1
+    config: "message.timestamp.type=LogAppendTime"
+  replicas: 1
+  persistence:
+    size: 1Gi
+  zookeeper:
+    replicaCount: 1
+    persistence:
+      size: 1Gi
+

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: empattendance
+    namespace: {{ .Release.Namespace }}
+    labels:
+      app: empattendance
+      service: empattendance
+      {{- include "empattendance.labels" . | indent 6 }}
+spec:
+  selector:
+    service: empattendance
+    app: empattendance
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080

@@ -1,0 +1,20 @@
+dependencies:
+
+- name: vibrent-mysql
+  version: 0.4.0-develop-f7d9537
+  repository: https://nex.vibrenthealth.com/repository/devcharts/
+  alias: empattendanceDatabase
+
+
+- name: kafka
+  version: 2.0.6-vibrent-develop-7bc5268
+  repository: https://nex.vibrenthealth.com/repository/devcharts/
+  alias: empattendanceKafka
+  condition: empattendanceKafka.enabled
+
+- name: vault-toggles
+  repository: https://nex.vibrenthealth.com/repository/devcharts/
+  version: 0.2.5-develop-87bd22f
+- name: ingress-helpers
+  repository: https://nex.vibrenthealth.com/repository/devcharts/
+  version: 0.1.0-develop-4c43725

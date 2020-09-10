@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.vibrent.empattendance</groupId>
+	<artifactId>empattendance</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>empattendance</name>
+	<description>TODO: PLEASE ADD A DESCRIPTION</description>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.2.5.RELEASE</version>
+    <relativePath/> <!-- lookup parent from repository -->
+  </parent>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <java.version>11</java.version>
+    <aggregate.report.dir>${project.build.directory}/coverage-reports/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
+    <jacoco.it.execution.data.file>${project.build.directory}/coverage-reports/jacoco-it.exec</jacoco.it.execution.data.file>
+    <jacoco.ut.execution.data.file>${project.build.directory}/coverage-reports/jacoco-ut.exec</jacoco.ut.execution.data.file>
+    
+    <h2.version>1.4.197</h2.version>
+    <flyway.version>5.2.4</flyway.version>
+    
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework.kafka</groupId>
+      <artifactId>spring-kafka</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.kafka</groupId>
+      <artifactId>spring-kafka-test</artifactId>
+    </dependency>
+    
+    
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+      <version>${flyway.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>${h2.version}</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.logstash.logback</groupId>
+      <artifactId>logstash-logback-encoder</artifactId>
+      <version>5.3</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <executable>
+            true
+          </executable>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.5</version>
+        <executions>
+          <execution>
+            <id>jacoco-pre-unit-test</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <configuration>
+              <!-- Sets the path to the file which contains the execution data. -->
+              <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+              <propertyName>surefireArgLine</propertyName>
+              <excludes>
+                <exclude>**/*IT.class</exclude>
+                <exclude>**/dto/*.class</exclude>
+                <exclude>**/bo/**/*</exclude>
+                <exclude>**/vo/**/*</exclude>
+                <exclude>**/configuration/**/*</exclude>
+                <exclude>**/config/**/*</exclude>
+                <exclude>**/configs/**/*</exclude>
+                <exclude>**/exception/**/*</exclude>
+                <exclude>**/exceptions/**/*</exclude>
+                <exclude>**/enum/**/*</exclude>
+                <exclude>**/enums/**/*</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>jacoco-post-unit-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <title>Unit Tests Coverage Report</title>
+              <excludes>
+                <exclude>**/*IT.class</exclude>
+                <exclude>**/dto/*.class</exclude>
+                <exclude>**/bo/**/*</exclude>
+                <exclude>**/vo/**/*</exclude>
+                <exclude>**/configuration/**/*</exclude>
+                <exclude>**/config/**/*</exclude>
+                <exclude>**/configs/**/*</exclude>
+                <exclude>**/exception/**/*</exclude>
+                <exclude>**/exceptions/**/*</exclude>
+                <exclude>**/enum/**/*</exclude>
+                <exclude>**/enums/**/*</exclude>
+              </excludes>
+              <!-- Sets the path to the file which contains the execution data. -->
+              <dataFile>${jacoco.ut.execution.data.file}</dataFile>
+              <!-- Sets the output directory for the code coverage report. -->
+              <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>jacoco-pre-integration-test</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>prepare-agent-integration</goal>
+            </goals>
+            <configuration>
+              <!-- Sets the path to the file which contains the execution data. -->
+              <destFile>${jacoco.it.execution.data.file}</destFile>
+              <append>true</append>
+              <!-- Sets the name for JaCoCo runtime agent settings property -->
+              <propertyName>failsafeArgLine</propertyName>
+              <excludes>
+                <exclude>**/dto/*.class</exclude>
+                <exclude>**/bo/**/*</exclude>
+                <exclude>**/vo/**/*</exclude>
+                <exclude>**/configuration/**/*</exclude>
+                <exclude>**/config/**/*</exclude>
+                <exclude>**/configs/**/*</exclude>
+                <exclude>**/exception/**/*</exclude>
+                <exclude>**/exceptions/**/*</exclude>
+                <exclude>**/enum/**/*</exclude>
+                <exclude>**/enums/**/*</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>jacoco-post-integration-test</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <title>Integration Tests Coverage Report</title>
+              <!-- Sets the path to the file which contains the execution data. -->
+              <dataFile>${jacoco.it.execution.data.file}</dataFile>
+              <!-- Sets the output directory for the code coverage report. -->
+              <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
+              <excludes>
+                <exclude>**/dto/*.class</exclude>
+                <exclude>**/bo/**/*</exclude>
+                <exclude>**/vo/**/*</exclude>
+                <exclude>**/configuration/**/*</exclude>
+                <exclude>**/config/**/*</exclude>
+                <exclude>**/configs/**/*</exclude>
+                <exclude>**/exception/**/*</exclude>
+                <exclude>**/exceptions/**/*</exclude>
+                <exclude>**/enum/**/*</exclude>
+                <exclude>**/enums/**/*</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>jacoco-merge-unit-and-integration</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>merge</goal>
+            </goals>
+            <configuration>
+              <fileSets>
+                <fileSet>
+                  <directory>${project.build.directory}/coverage-reports/</directory>
+                  <includes>
+                    <include>*.exec</include>
+                  </includes>
+                </fileSet>
+              </fileSets>
+              <destFile>${project.build.directory}/coverage-reports/merged.exec</destFile>
+            </configuration>
+          </execution>
+          <execution>
+            <id>jacoco-create-merged-report</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <title>Merged Test Coverage Report</title>
+              <dataFile>${project.build.directory}/coverage-reports/merged.exec</dataFile>
+              <outputDirectory>${project.reporting.outputDirectory}/full-coverage-report</outputDirectory>
+              <excludes>
+                <exclude>**/dto/*.class</exclude>
+                <exclude>**/bo/**/*</exclude>
+                <exclude>**/vo/**/*</exclude>
+                <exclude>**/configuration/**/*</exclude>
+                <exclude>**/config/**/*</exclude>
+                <exclude>**/configs/**/*</exclude>
+                <exclude>**/exception/**/*</exclude>
+                <exclude>**/exceptions/**/*</exclude>
+                <exclude>**/enum/**/*</exclude>
+                <exclude>**/enums/**/*</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <configLocation>google_checks.xml</configLocation>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>8.29</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>validate</id>
+            <phase>validate</phase>
+            <configuration>
+              <encoding>UTF-8</encoding>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>warning</violationSeverity>
+            </configuration>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <configLocation>google_checks.xml</configLocation>
+          <encoding>UTF-8</encoding>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>checkstyle</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+
+</project>

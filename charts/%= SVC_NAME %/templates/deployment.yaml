@@ -1,0 +1,110 @@
+{{- $cluster := include "ingress-helpers.cluster" . -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: empattendance-deployment
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+  {{- if .Values.deployment.annotations }}
+{{ toYaml .Values.deployment.annotations | indent 4 }}
+  {{- end }}
+  labels:
+    tier: app
+        {{- include "empattendance.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      tier: app
+      service: empattendance
+      app: empattendance
+  template:
+    metadata:
+      annotations:
+      {{ include "vault-annotations" . | indent 8 }}
+      {{- if .Values.deployment.podAnnotations }}
+{{ toYaml .Values.deployment.annotations | indent 8 }}
+      {{- end }}
+      name: empattendance
+      labels:
+        tier: app
+        {{- include "empattendance.labels" . | indent 8 }}
+    spec:
+      serviceAccountName: empattendance
+{{- if or (.Values.deployment.podAffinity) (.Values.deployment.podAntiAffinity) }}
+      affinity:
+        {{- if .Values.deployment.podAffinity }}
+        podAffinity:
+{{ toYaml .Values.deployment.podAffinity | indent 10 }}
+        {{- end }}
+        {{- if .Values.deployment.podAntiAffinity }}
+        podAntiAffinity:
+{{ toYaml .Values.deployment.podAntiAffinity | indent 10 }}
+      {{- end }}
+      {{- end }}
+      {{- if eq $cluster "true" }}
+      nodeSelector:
+        tier: app
+      {{- end }}
+    {{- if .Values.deployment.volumes }}
+      volumes: {{ toYaml .Values.deployment.volumes | nindent 8 }}
+    {{- end }}
+      containers:
+      - name: empattendance
+        image: {{ include "empattendance_reg" . }}.vibrenthealth.com/vibrent/{{ .Values.deployment.image }}:{{ include "empattendance_version" . }}
+        ports:
+        {{- range .Values.deployment.containerPort }}
+        - containerPort: {{ . }}
+        {{- end }}
+        {{- if eq $cluster "true" }}
+        resources: {{ toYaml .Values.deployment.resources | nindent 10 }}
+        {{- end }}
+        imagePullPolicy: {{ include "pullPolicy" . }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.deployment.readinessProbe.httpPathGet }}
+            port: {{ .Values.deployment.readinessProbe.port }}
+          failureThreshold: {{ .Values.deployment.readinessProbe.failureThreshold }}
+          successThreshold: {{ .Values.deployment.readinessProbe.successThreshold }}
+          initialDelaySeconds: {{ .Values.deployment.readinessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.deployment.readinessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.deployment.readinessProbe.periodSeconds }}
+        env:
+        - name: JAVA_OPTS
+          valueFrom:
+            configMapKeyRef:
+              name: empattendance-config
+              key: JAVA_OPTS
+        - name: EXAMPLE_VAR
+          valueFrom:
+            configMapKeyRef:
+              name: empattendance-config
+              key: EXAMPLE_VAR
+        
+        - name: SPRING_KAFKA_BOOTSTRAPSERVERS
+          valueFrom:
+            configMapKeyRef:
+              name: empattendance-config
+              key: SPRING_KAFKA_BOOTSTRAPSERVERS
+        
+        
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "empattendance.secret" . }}
+              key: MYSQL_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "empattendance.secret" .}}
+              key: MYSQL_PASSWORD
+        - name: DB_HOST
+          value:  {{ .Values.empattendanceDatabase.fullnameOverride }}
+        
+      {{ if .Values.deployment.volumeMounts }}
+        volumeMounts: {{ toYaml .Values.deployment.volumeMounts | nindent 10 }}
+      {{- end }}
+      imagePullSecrets:
+      - name: {{ include "empattendance_reg" . }}.vibrenthealth.com

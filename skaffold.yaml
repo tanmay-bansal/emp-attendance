@@ -1,0 +1,41 @@
+apiVersion: skaffold/v2beta2
+kind: Config
+build:
+  artifacts:
+    - image: reg.vibrenthealth.com/vibrent/empattendance
+      context: .
+      docker:
+        dockerfile: Dockerfile
+  tagPolicy:
+    sha256: {}
+  local:
+    push: false
+    useDockerCLI: false
+    useBuildkit: false
+deploy:
+  helm:
+    releases:
+    - name: empattendance
+      chartPath: charts/empattendance
+      
+      wait: true
+      overrides:
+        configmap:
+          javaOptions: -server -XX:InitialRAMPercentage=50.0 -XX:MinRAMPercentage=50.0 -XX:MaxRAMPercentage=90.0 -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+        global:
+          baseClusterName: localhost
+        empattendance_reg: reg
+      setValueTemplates:
+        empattendance_version: "{{ .DIGEST_HEX }}"
+    flags:
+      upgrade:
+      - --timeout=300s
+      install:
+      - --timeout=300s
+
+
+
+
+# you can define profiles here to pass different values to deployment
+#   as outlined here (https://skaffold.dev/docs/how-tos/profiles/)
+
