@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.vibrent.empattendance</groupId>
-	<artifactId>empattendance</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+  <groupId>com.vibrent.empattendance</groupId>
+  <artifactId>empattendance</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
 
-	<name>empattendance</name>
-	<description>TODO: PLEASE ADD A DESCRIPTION</description>
+  <name>empattendance</name>
+  <description>TODO: PLEASE ADD A DESCRIPTION</description>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -25,10 +25,10 @@
     <aggregate.report.dir>${project.build.directory}/coverage-reports/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
     <jacoco.it.execution.data.file>${project.build.directory}/coverage-reports/jacoco-it.exec</jacoco.it.execution.data.file>
     <jacoco.ut.execution.data.file>${project.build.directory}/coverage-reports/jacoco-ut.exec</jacoco.ut.execution.data.file>
-    
+
     <h2.version>1.4.197</h2.version>
     <flyway.version>5.2.4</flyway.version>
-    
+
   </properties>
 
   <dependencies>
@@ -40,7 +40,15 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
-    
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-tomcat</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.springframework.kafka</groupId>
       <artifactId>spring-kafka</artifactId>
@@ -49,8 +57,8 @@
       <groupId>org.springframework.kafka</groupId>
       <artifactId>spring-kafka-test</artifactId>
     </dependency>
-    
-    
+
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -71,7 +79,7 @@
       <version>${h2.version}</version>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-devtools</artifactId>
@@ -258,57 +266,11 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.0.0</version>
-        <configuration>
-          <configLocation>google_checks.xml</configLocation>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>com.puppycrawl.tools</groupId>
-            <artifactId>checkstyle</artifactId>
-            <version>8.29</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <id>validate</id>
-            <phase>validate</phase>
-            <configuration>
-              <encoding>UTF-8</encoding>
-              <consoleOutput>true</consoleOutput>
-              <failOnViolation>true</failOnViolation>
-              <violationSeverity>warning</violationSeverity>
-            </configuration>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
   <reporting>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.0.0</version>
-        <configuration>
-          <configLocation>google_checks.xml</configLocation>
-          <encoding>UTF-8</encoding>
-        </configuration>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>checkstyle</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
     </plugins>
   </reporting>
 

@@ -8,10 +8,24 @@ spring:
       properties:
         spring.json.type.mapping: MYTOPIC1:MYPOJO1,MYTOPIC2:MYPOJO2
 
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database: MYSQL
+    openInView: true
+    show_sql: false
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+      naming-strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
+      enable_lazy_load_no_trans: true
+      properties.org.hibernate.envers:
+        audit_table_suffix: _aud
 
   datasource:
     platform: mysql
-    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/employee?autoreconnect=true
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/empattance?autoreconnect=true
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:password}
 
+flyway:
+  locations: classpath:db.migration
