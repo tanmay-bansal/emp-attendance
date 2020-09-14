@@ -1,6 +1,6 @@
 package  com.vibrent.empattendance.empattendance.messaging.consumer;
 
-import com.vibrent.empattendance.empattendance.models.FooDto;
+import com.vibrent.empattendance.empattendance.dto.Employee;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
     containerFactory = "kafkaListenerContainerFactory")
 public class EmpattendanceListener {
   @KafkaHandler
-  public void listenFoo(FooDto foo) {
+  public void listenFoo(Employee foo) {
     System.out.println("Received: " + foo);
   }
 }

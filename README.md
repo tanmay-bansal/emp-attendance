@@ -130,3 +130,4 @@ Application generates logs and they are pushed to a common ELK stack. Please rea
 
 
 *This readme is generated using [generator-microsvc](https://github.com/VibrentHealth/generator-microsvc)*
+# emp-attendance

@@ -1,4 +1,4 @@
-package  com.vibrent.empattendance.empattendance.models;
+package  com.vibrent.empattendance.empattendance.dto;
 
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
