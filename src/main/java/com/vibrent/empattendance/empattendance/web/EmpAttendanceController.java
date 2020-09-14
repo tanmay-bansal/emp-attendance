@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class EmpAttendanceController {
 
@@ -31,25 +33,26 @@ public class EmpAttendanceController {
   }
 
   @GetMapping("/attendance/{empId}")
-  public Attendance getAttendance(@PathVariable String empId) {
+  public List<Attendance> getAttendance(@PathVariable String empId) {
     return attendanceService.getAttendance(empId);
   }
 
-  @PostMapping("/employee")
+    @PostMapping("/employee")
   public ResponseEntity<String> addEmployee(@RequestBody Employee emp) {
     employeeService.addEmployee(emp);
     return new ResponseEntity<>("Added", HttpStatus.CREATED);
   }
 
   @PostMapping("/attendance")
-  public ResponseEntity<String> addInTime(@RequestBody String empId) {
-    attendanceService.addInTime(empId);
+  public ResponseEntity<String> addInTime(@RequestBody Attendance attendance) {
+    attendanceService.addInTime(attendance.getEmpId());
     return new ResponseEntity<>("Added", HttpStatus.CREATED);
   }
 
   @PutMapping("/attendance")
-  public ResponseEntity<String> addOutTime(@RequestBody String empId) {
-    attendanceService.addOutTime(empId);
+  public ResponseEntity<String> addOutTime(@RequestBody Attendance attendance) {
+    if(attendance.getEmpId()!=null)
+    attendanceService.addOutTime(attendance.getEmpId());
     return new ResponseEntity<>("Updated", HttpStatus.ACCEPTED);
   }
 

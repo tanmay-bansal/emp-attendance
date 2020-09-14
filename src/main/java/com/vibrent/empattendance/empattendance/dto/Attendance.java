@@ -11,6 +11,7 @@ import java.util.Date;
 @Data
 public class Attendance {
     @Id
+    @Column(name = "att_id")
     private String attId;
     @Column(name = "emp_id")
     private String empId;
